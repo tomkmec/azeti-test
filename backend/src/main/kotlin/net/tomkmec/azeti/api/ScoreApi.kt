@@ -9,13 +9,14 @@ import org.springframework.web.bind.annotation.*
 import kotlin.math.roundToInt
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api", produces = [MediaType.APPLICATION_JSON_VALUE])
+@CrossOrigin(methods = [RequestMethod.GET, RequestMethod.OPTIONS, RequestMethod.POST])
 class ScoreApi(@Autowired val store: Store) {
 
-    @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE], path = ["/score"])
+    @GetMapping(path = ["/score"])
     fun list(): List<Score> = store.getAll()
 
-    @PostMapping(produces = [MediaType.APPLICATION_JSON_VALUE], path = ["/score"])
+    @PostMapping(path = ["/score"], consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun insert(@RequestBody(required = true) scoreIn: ScoreInput): Score {
         val score = Score(
                 name = scoreIn.name,

@@ -1,25 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Container } from '@material-ui/core';
+import React, { useState } from 'react';
+import * as api from './api'
+
+import ScoreInput from './ScoreInput'
+import YourScore from './YourScore'
+import ScoreResults from './ScoreResults'
 
 function App() {
+  const [results, setResults] = useState([] as Score[])
+  const [latest, setLatest] = useState(false as Score|false)
+
+  const submit = async (name: string) => {
+    api.submit({name})
+      .then((score) => {
+        setLatest(score);
+        return api.getAll();
+      }).then(setResults)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container maxWidth="md">
+      <ScoreInput onSubmit={submit} />
+      <YourScore score={latest} />
+      <ScoreResults data={results} latest={latest} />
+    </Container>
   );
 }
 
